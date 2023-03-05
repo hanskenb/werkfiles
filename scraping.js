@@ -27,7 +27,7 @@ await page.$eval('#next', button => button.click());
    await page.waitForTimeout(5000);
 await page.$eval('#fluv-cookies-popup-container', button => button.click());
 
-await page.goto('https://mijn.fluvius.be/verbruik/541448820045269231/detail'); //adapted to my EAN, change to yours
+await page.goto('https://mijn.fluvius.be/verbruik/541448820045369231/detail'); //adapted to my EAN, change to yours
 
 await page.waitForTimeout(5000);
 
