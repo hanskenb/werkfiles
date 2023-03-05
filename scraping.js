@@ -13,8 +13,8 @@ const moment = require('moment');
   await page.waitForSelector('#signInName');
 
   // Fill in the login form and submit it
-  await page.type('#signInName', 'login');
-  await page.type('#password', 'paswoord');
+  await page.type('#signInName', 'login'); // replace login with your login 
+  await page.type('#password', 'paswoord'); // replace paswoord with your password
   await page.click('#next');
 
 
