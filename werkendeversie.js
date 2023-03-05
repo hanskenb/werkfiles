@@ -4,7 +4,7 @@ const https = require('https');
 const axios = require('axios');
 const moment = require('moment-timezone');
 const xml2js = require('xml2js');
-const API_TOKEN = 'your-token';
+const API_TOKEN = 'your-token'; // replace this with your token, see https://amsleser.no/blog/post/21-obtaining-api-token-from-entso-e to find out how to get one
 
 const data = [];
 
