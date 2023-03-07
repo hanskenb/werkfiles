@@ -5,8 +5,8 @@ const axios = require('axios');
 const moment = require('moment-timezone');
 const xml2js = require('xml2js');
 const path = require('path');
-const API_TOKEN = '3f217f07-093a-47b2-a6c1-a3827a418e84'; //please fill in your token here. Request an API key by sending an email to transparency@entsoe.eu with “Restful API access” in the subject line. In the email body state your registered email address. You will receive an email when you have been provided with the API key. The key is then visible in your ENTSO-E account under “Web API Security Token”
-const csvpath = '/Users/hansbontinck/Downloads/Verbruikshistoriek_elektriciteit_541448820045269231_20230109_20230227_kwartiertotalen.csv'; // please  fill the path of the csv file with the 15-minute-totals in here.
+const API_TOKEN = 'yourtoken'; //please fill in your token here. Request an API key by sending an email to transparency@entsoe.eu with “Restful API access” in the subject line. In the email body state your registered email address. You will receive an email when you have been provided with the API key. The key is then visible in your ENTSO-E account under “Web API Security Token”
+const csvpath = 'yourpath'; // please  fill the path of the csv file with the 15-minute-totals in here.
 const data = [];
 
 fs.createReadStream(csvpath)
