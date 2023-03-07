@@ -1,14 +1,15 @@
-cconst fs = require('fs');
+const fs = require('fs');
 const csv = require('csv-parser');
 const https = require('https');
 const axios = require('axios');
 const moment = require('moment-timezone');
 const xml2js = require('xml2js');
-const API_TOKEN = '3f217f07-093a-47b2-a6c1-a3827a418e84';
-
+const path = require('path');
+const API_TOKEN = 'yourtoken'; //please fill in your token here. Request an API key by sending an email to transparency@entsoe.eu with “Restful API access” in the subject line. In the email body state your registered email address. You will receive an email when you have been provided with the API key. The key is then visible in your ENTSO-E account under “Web API Security Token”
+const csvpath = 'yourpathtocsv'; // please  fill the path of the csv file with the 15-minute-totals in here.
 const data = [];
 
-fs.createReadStream('/Users/hansbontinck/Downloads/Verbruikshistoriek_elektriciteit_541448820045269231_20230109_20230227_kwartiertotalen.csv')
+fs.createReadStream(csvpath)
   .pipe(csv({
     separator: ';'
   }))
@@ -120,7 +121,7 @@ for (let i = 0; i < data.length; i++) {
 
 const results = [];
 
-fs.createReadStream('/Users/hansbontinck/Downloads/Verbruikshistoriek_elektriciteit_541448820045269231_20230109_20230227_kwartiertotalen.csv')
+fs.createReadStream(csvpath)
   .pipe(csv({ separator: ';' }))
   .on('data', (row) => {
     if (row.Register.includes('Afname')) {
@@ -136,10 +137,13 @@ fs.createReadStream('/Users/hansbontinck/Downloads/Verbruikshistoriek_elektricit
   })
   .on('end', () => {
   
-  
+  //
+const directory = path.dirname(csvpath);
+const outputFilePath = path.join(directory, 'output.csv');
 
+ 
 // Define the path and name of the output file
-const outputPath = '/Users/hansbontinck/Downloads/output.csv';
+const outputFilePath = '/Users/hansbontinck/Downloads/output.csv';
 
 // Define the array of data to be written to the CSV file
 
