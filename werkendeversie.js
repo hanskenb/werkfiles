@@ -5,8 +5,8 @@ const axios = require('axios');
 const moment = require('moment-timezone');
 const xml2js = require('xml2js');
 const path = require('path');
-const API_TOKEN = 'yourtoken'; //please fill in your token here. Request an API key by sending an email to transparency@entsoe.eu with “Restful API access” in the subject line. In the email body state your registered email address. You will receive an email when you have been provided with the API key. The key is then visible in your ENTSO-E account under “Web API Security Token”
-const csvpath = 'yourpathtocsv'; // please  fill the path of the csv file with the 15-minute-totals in here.
+const API_TOKEN = '3f217f07-093a-47b2-a6c1-a3827a418e84'; //please fill in your token here. Request an API key by sending an email to transparency@entsoe.eu with “Restful API access” in the subject line. In the email body state your registered email address. You will receive an email when you have been provided with the API key. The key is then visible in your ENTSO-E account under “Web API Security Token”
+const csvpath = '/Users/hansbontinck/Downloads/Verbruikshistoriek_elektriciteit_541448820045269231_20230109_20230227_kwartiertotalen.csv'; // please  fill the path of the csv file with the 15-minute-totals in here.
 const data = [];
 
 fs.createReadStream(csvpath)
@@ -66,7 +66,7 @@ console.log(url);
     const datedayafter = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
     const datedayaftertostring = moment(datedayafter, 'DD-MM-YYYY'); 
 const date = datedayaftertostring.add(1, 'days').format('DD-MM-YYYY'); //we moeten de dag voor de gevraagde dag selecteren
-    console.log(date);
+    
     
     
 //     const prices = series.Period[0].Point.map(point => parseFloat(point['price.amount'][0]));
@@ -76,7 +76,7 @@ const prices = series.Period[0].Point.map(point => {
   return price.toLocaleString('en-US', { minimumFractionDigits: 5, maximumFractionDigits: 5 }).replace('.', ',');
 });
 
-//console.log(prices);
+
       return prices.map((price, index) => ({ date, hour: index, price }));
 
               }
@@ -143,26 +143,39 @@ const outputFilePath = path.join(directory, 'output.csv');
 
  
 // Define the path and name of the output file
-const outputFilePath = '/Users/hansbontinck/Downloads/output.csv';
 
 // Define the array of data to be written to the CSV file
 
 // Define the header row for the CSV file
-const headerRow = 'Van Datum;Van Tijdstip;Volume;actualprice\n';
+const headerRow = 'Van Datum;Van Tijdstip;Volume;actualprice;paidprice\n';
 
 // Build the CSV file content as a string
 let csvContent = headerRow;
+let totalPaidPrice = 0;
+let totalVolume = 0;
 for (let i = 0; i < results.length; i++) {
   const row = results[i];
-  const newRow = `${row['\uFEFFVan Datum']};${row['Van Tijdstip']};${row.Volume};${row.actualprice}\n`;
+  const paidPrice = parseFloat(row.Volume.replace(',', '.')) * parseFloat(row.actualprice.replace(',', '.'));
+  const volumetodot = parseFloat(row.actualprice.replace(',', '.'));
+  const newRow = `${row['\uFEFFVan Datum']};${row['Van Tijdstip']};${row.Volume};${row.actualprice};${paidPrice}\n`;
+  
+ totalVolume += volumetodot;
+
+  if (!isNaN(paidPrice)) {
+    totalPaidPrice += paidPrice;
+  }
+
   csvContent += newRow;
 }
-
+console.log('Total paid price:', totalPaidPrice);
+console.log('Total volume price:', totalVolume);
+console.log('Gemiddeld betaalde prijs:', totalPaidPrice/totalVolume);
 // Write the CSV file to disk
-fs.writeFile(outputPath, csvContent, (err) => {
+fs.writeFile(outputFilePath, csvContent, (err) => {
   if (err) {
     console.error(err);
   } else {
+    console.log(outputFilePath);
     console.log('CSV file written successfully!');
   }
 });
