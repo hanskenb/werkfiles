@@ -1,14 +1,14 @@
-const fs = require('fs');
+cconst fs = require('fs');
 const csv = require('csv-parser');
 const https = require('https');
 const axios = require('axios');
 const moment = require('moment-timezone');
 const xml2js = require('xml2js');
-const API_TOKEN = 'your-token'; // replace this with your token, see https://amsleser.no/blog/post/21-obtaining-api-token-from-entso-e to find out how to get one
+const API_TOKEN = '3f217f07-093a-47b2-a6c1-a3827a418e84';
 
 const data = [];
 
-fs.createReadStream('csvstream.csv')
+fs.createReadStream('/Users/hansbontinck/Downloads/Verbruikshistoriek_elektriciteit_541448820045269231_20230109_20230227_kwartiertotalen.csv')
   .pipe(csv({
     separator: ';'
   }))
@@ -31,6 +31,7 @@ fs.createReadStream('csvstream.csv')
     const dates = data.map(row => moment(row.date, 'DD-MM-YYYY'));
     const oldestDate = moment.min(dates).format('DD-MM-YYYY');
     const mostRecentDate = moment.max(dates).format('DD-MM-YYYY');
+    
     const oldestDateFormatted = moment(oldestDate, 'DD-MM-YYYY').format('YYYYMMDD');
     const mostRecentDateFormatted = moment(mostRecentDate, 'DD-MM-YYYY').format('YYYYMMDD');
     const formattedStart = oldestDateFormatted + '0000';
@@ -38,7 +39,7 @@ fs.createReadStream('csvstream.csv')
     
     // Construct the URL for the API call
     const url = `https://web-api.tp.entsoe.eu/api?documentType=A44&in_Domain=10YBE----------2&out_Domain=10YBE----------2&periodStart=${formattedStart}&periodEnd=${formattedEnd}&securityToken=${API_TOKEN}`;
-
+console.log(url);
     // Make the API call
     axios.get(url)
     .then(response => {
@@ -61,7 +62,10 @@ fs.createReadStream('csvstream.csv')
     const dateParts = date2.split('T')[0].split('-');
 
 
-    const date = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+    const datedayafter = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+    const datedayaftertostring = moment(datedayafter, 'DD-MM-YYYY'); 
+const date = datedayaftertostring.add(1, 'days').format('DD-MM-YYYY'); //we moeten de dag voor de gevraagde dag selecteren
+    console.log(date);
     
     
 //     const prices = series.Period[0].Point.map(point => parseFloat(point['price.amount'][0]));
@@ -71,7 +75,7 @@ const prices = series.Period[0].Point.map(point => {
   return price.toLocaleString('en-US', { minimumFractionDigits: 5, maximumFractionDigits: 5 }).replace('.', ',');
 });
 
-console.log(prices);
+//console.log(prices);
       return prices.map((price, index) => ({ date, hour: index, price }));
 
               }
